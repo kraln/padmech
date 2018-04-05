@@ -1,0 +1,6 @@
+r
+loadbin btle_und_snes.bin, 0x00000000
+r
+g
+exit
+
