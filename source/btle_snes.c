@@ -84,8 +84,13 @@ void pad_handle_shifting(pad_state_t * state)
   if (state->button_state.btn_r) nrf_gpio_pin_set(SNES_DATA); else nrf_gpio_pin_clear(SNES_DATA);
   pad_wait_clock_edge();
 
+#if 0
   /* Output 0 until next latch */
   nrf_gpio_pin_clear(SNES_DATA);
+#else
+  /* Output 1 until next latch */
+  nrf_gpio_pin_set(SNES_DATA);
+#endif
 }
 
 /* wait for rising edge */
