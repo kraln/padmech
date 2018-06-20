@@ -19,17 +19,13 @@ JLINKGDB := JLinkGDBServer
 JLINK_OPTIONS = -device nrf51822 -if swd -speed 1000
 
 # Flash start address
-FLASH_START_ADDRESS := 0x00000000
+FLASH_START_ADDRESS := 0x00018000
 
 # Cross-compiler
 TARGET_TRIPLE := arm-none-eabi
 
 # Build Directory
 BUILD := build
-
-# Nordic stuff
-#USE_SOFTDEVICE = s110
-USE_SOFTDEVICE = blank
 
 SOURCES = \
 	source \
@@ -46,7 +42,7 @@ INCLUDES := \
 
 LIBRARIES :=
 
-LD_SCRIPT := gcc_nrf51_$(USE_SOFTDEVICE).ld
+LD_SCRIPT := gcc_nrf51_blank.ld
 
 ##########################################################################
 # Compiler prefix and location
@@ -87,9 +83,9 @@ endif
 COMMON_FLAGS := -g -c -Wall -Werror -ffunction-sections -fdata-sections \
 	-fmessage-length=0 -std=gnu99 \
 	-DTARGET=$(TARGET) -D$(BOARD) -D$(TARGET) \
-	-DPROGRAM_VERSION=\"$(PROGRAM_VERSION)\" \
-	-DSEMIHOSTED \
-	-DDEBUG_RESET_REASON=0 \
+	-DPROGRAM_VERSION=\"$(PROGRAM_VERSION)\" # \
+#	-DSEMIHOSTED \
+#	-DDEBUG_RESET_REASON=0 \
 
 COMMON_ASFLAGS := -D__ASSEMBLY__ -x assembler-with-cpp
 
@@ -151,7 +147,7 @@ $(BUILD):
 clean:
 	@echo clean ...
 	@rm -rf $(BUILD) $(NAME)_test $(NAME)_test.exe $(NAME)_test.xml \
-		$(OUTPUT).bin tags alice_test.info test_coverage
+		$(OUTPUT).bin $(OUTPUT).hex tags test_coverage
 
 ctags:
 	@[ -d $(BUILD) ] || mkdir -p $(BUILD)
@@ -178,8 +174,7 @@ DEPENDS := $(OFILES:.o=.d)
 # Targets
 .PHONY: ctags
 
-all: $(OUTPUTDIR)/tags $(OUTPUT).bin \
-	$(NAME).objdump 
+all: $(OUTPUTDIR)/tags $(OUTPUT).bin $(OUTPUT).hex $(NAME).objdump 
 
 ctags: $(OUTPUTDIR)/tags
 
@@ -187,6 +182,9 @@ ctags: $(OUTPUTDIR)/tags
 # Project-specific Build Rules
 ##########################################################################
 $(OUTPUT).bin: $(NAME).bin
+	@cp $< $@
+
+$(OUTPUT).hex: $(NAME).hex
 	@cp $< $@
 
 $(NAME).elf: $(OFILES)

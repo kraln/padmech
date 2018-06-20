@@ -1,9 +1,9 @@
 /* Linker script to configure memory regions. */
 MEMORY
 {
-  /* We're not using a soft device, so we have full reign over the device */
-  FLASH (rx) : ORIGIN = 0x0, LENGTH = 0x3EFFF
+  /* We're using the s110 soft device (and the bootloader) */
+  FLASH (rx) : ORIGIN = 0x00018000, LENGTH = 0x1FC00
   STORAGE_REGION (r) : ORIGIN = 0x3F000, LENGTH = 0x400
-  RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 0x2000
+  RAM (rwx) : ORIGIN = 0x20002C00, LENGTH = 0x5380
 }
 INCLUDE "gcc_nrf51_common.ld"
